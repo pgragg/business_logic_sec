@@ -49,3 +49,13 @@ class FilingText:
             filename = f'filing_texts/{ticker_symbol}_{date}'
             output.append({'ticker_symbol': ticker_symbol, 'date': date, 'filename': filename, 'link': filing.link})
         return output
+    
+    def missing_ticker_symbol_dates(self, num=-1):
+        tm = CompanyTickerMapping().get()
+        # Get a list of ciks
+        ciks = tm.cik 
+        # Find recent filings 
+        filings = FilingIndex().get()[:num]
+        # Return filings we don't have ciks for 
+        fwks = filings.loc[~filings['cik'].isin(ciks.values)]
+        return fwks
