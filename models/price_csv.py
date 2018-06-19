@@ -45,11 +45,15 @@ class PriceCsv:
                 continue
             try:
                 recent_prices = self.__av_fetch(date_range, ticker_symbol)
+                print("av fetch")
             except:
-                # print('API likely rejected request for ' + ticker_symbol)
-                # break
                 recent_prices = []
-                # recent_prices = self.__quandl_fetch(date_range, ticker_symbol)
+                time.sleep(1)
+#                 try:
+#                     recent_prices = self.__quandl_fetch(date_range, ticker_symbol)
+#                     print("quandl fetch")
+#                 except:
+#                     recent_prices = []
             if len(recent_prices) == 0:
                 print('fetch failed for ' + ticker_symbol)
                 continue
@@ -59,6 +63,7 @@ class PriceCsv:
             beginning_len = len(existing_prices)
             end_len = len(deduped_prices)
             num_updated = str(end_len - beginning_len)
+            deduped_prices = deduped_prices.sort_values(by='date')
             deduped_prices.to_csv(f'prices/{ticker_symbol}.csv', index=False)
             print('Successfully updated ' + num_updated + ' dates for ' + ticker_symbol)
         return list_of_objects
